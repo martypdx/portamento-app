@@ -8,9 +8,12 @@ export default function authService(userService, tokenService, $http, apiUrl, $s
         $http
             .get(`${apiUrl}/auth/verify`)
             .catch(() => {
-                tokenService.remove;
-                $window.localStorage.removeItem('id');
-                $window.localStorage.removeItem('username');
+                tokenService.remove(); // invoke me!
+                // call to user service here, ie:
+                userService.getCurrentUser();
+
+                // $window.localStorage.removeItem('id');
+                // $window.localStorage.removeItem('username');
             });
     }
 
@@ -18,6 +21,7 @@ export default function authService(userService, tokenService, $http, apiUrl, $s
         return (credentials) => {
             return $http.post(`${apiUrl}/auth/${endpoint}`, credentials)
                 .then(result => {
+                    // this should be in user service
                     currentUser = {};
                     $window.localStorage.setItem('id', result.data.id);
                     $window.localStorage.setItem('username', result.data.username);

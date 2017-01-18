@@ -13,6 +13,83 @@ export default {
     controller
 };
 
+// even better, move to service. Then this component doesn't
+// know/care where they come from.
+const NOTES = [
+    {
+        note: 'C3',
+        keyCode: 65
+    },
+    {
+        note: 'C#3',
+        keyCode: 87
+    },
+    {
+        note: 'D3',
+        keyCode: 83
+    },
+    {
+        note: 'D#3',
+        keyCode: 69
+    },
+    {
+        note: 'E3',
+        keyCode: 68
+    },
+    {
+        note: 'F3',
+        keyCode: 70
+    },
+    {
+        note: 'F#3',
+        keyCode: 84
+    },
+    {
+        note: 'G3',
+        keyCode: 71
+    },
+    {
+        note: 'G#3',
+        keyCode: 89
+    },
+    {
+        note: 'A3',
+        keyCode: 72
+    },
+    {
+        note: 'A#3',
+        keyCode: 85
+    },
+    {
+        note: 'B3',
+        keyCode: 74
+    },
+    {
+        note: 'C4',
+        keyCode: 75
+    },
+    {
+        note: 'C#4',
+        keyCode: 79
+    },
+    {
+        note: 'D4',
+        keyCode: 76
+    },
+    {
+        note: 'D#4',
+        keyCode: 80
+    },
+    {
+        note: 'E4',
+        keyCode: 186
+    },
+    {
+        note: 'F4',
+        keyCode: 222
+    }
+];
+
 controller.$inject = ['patchService', 'sequenceService', 'userService', '$window'];
 
 function controller(patchService, sequenceService, userService, $window) {
@@ -105,6 +182,8 @@ function controller(patchService, sequenceService, userService, $window) {
                 };
                 sequenceService.add(currSequence);
             })
+            // this should be done on server by getting user id from token,
+            // not here in the app
             .then(() => userService.getUserById(this.currentUser.id))
             .then(user => {
                 user.patchId.push(this.patch._id);
@@ -123,7 +202,6 @@ function controller(patchService, sequenceService, userService, $window) {
         if(!this.patch.votes) this.patch.votes = 0;
         this.patch.votes += number;
         patchService.update(this.patch._id, this.patch)
-            // .then(res => console.log(res))
             .catch(error => console.log('error at upvoting', error));
     };
 
@@ -134,6 +212,7 @@ function controller(patchService, sequenceService, userService, $window) {
         patchService.update(this.patch._id, this.patch)
             .then(res => {
                 this.favPatches.push(res);
+                // server work...
                 userService.getUserById(this.currentUser.id)
                     .then(user => {
                         user.favoriteId.push(this.patch._id);
@@ -147,6 +226,7 @@ function controller(patchService, sequenceService, userService, $window) {
         this.patch.favorites += -1;
         patchService.update(this.patch._id, this.patch)
             .then(() => {
+                // server work...
                 userService.getUserById(this.currentUser.id)
                     .then(user => {
                         user.favoriteId.forEach((obj, index) => {
@@ -170,80 +250,7 @@ function controller(patchService, sequenceService, userService, $window) {
  
     this.styles = styles;
 
-    this.notes = [
-        {
-            note: 'C3',
-            keyCode: 65
-        },
-        {
-            note: 'C#3',
-            keyCode: 87
-        },
-        {
-            note: 'D3',
-            keyCode: 83
-        },
-        {
-            note: 'D#3',
-            keyCode: 69
-        },
-        {
-            note: 'E3',
-            keyCode: 68
-        },
-        {
-            note: 'F3',
-            keyCode: 70
-        },
-        {
-            note: 'F#3',
-            keyCode: 84
-        },
-        {
-            note: 'G3',
-            keyCode: 71
-        },
-        {
-            note: 'G#3',
-            keyCode: 89
-        },
-        {
-            note: 'A3',
-            keyCode: 72
-        },
-        {
-            note: 'A#3',
-            keyCode: 85
-        },
-        {
-            note: 'B3',
-            keyCode: 74
-        },
-        {
-            note: 'C4',
-            keyCode: 75
-        },
-        {
-            note: 'C#4',
-            keyCode: 79
-        },
-        {
-            note: 'D4',
-            keyCode: 76
-        },
-        {
-            note: 'D#4',
-            keyCode: 80
-        },
-        {
-            note: 'E4',
-            keyCode: 186
-        },
-        {
-            note: 'F4',
-            keyCode: 222
-        }
-    ];
+    this.notes = NOTES;
    
     this.filter = new Tone.Filter().toMaster();
     this.combFilter = new Tone.FeedbackCombFilter(0, 0).toMaster();

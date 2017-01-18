@@ -1,6 +1,8 @@
 userService.$inject = ['$http', 'apiUrl', '$window'];
 
 export default function userService($http, apiUrl, $window) {
+    // store "global" app state here, ie:
+    let currentUser = null;
 
     return {
         getCurrent() {

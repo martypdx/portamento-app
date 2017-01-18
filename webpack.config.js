@@ -16,6 +16,7 @@ module.exports = {
         }),
         new ExtractTextPlugin('main.css'),
         new CopyWebpackPlugin([{from: './images', to: 'images'}],
+        // Did you have problems without this option?
         {copyUnmodified: true}
         )],
 
@@ -38,10 +39,7 @@ module.exports = {
         }, {
             test: /\.html$/,
             loader: 'html-loader'
-        }, {
-            test: /\.css$/,
-            loader: 'style!css-loader'
-        }]
+        }] // I don't see any css in your project
     },
     htmlLoader: {
         attrs: false
